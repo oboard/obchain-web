@@ -1,0 +1,34 @@
+{
+    "common": {
+        "height": "区块链高度"
+    },
+    "Home": {
+        "start": "开始！",
+        "about": "关于",
+        "description": "创新的使用了区块链技术的Web3区块链，于2024年4月23日正式上线。ObChain Web是一个基于区块链的Web3应用，它将为用户提供便捷、安全、免费的数字资产管理服务。"
+    },
+    "Wallet": {
+        "title": "ObChain Wallet",
+        "create": "创建钱包",
+        "import": "导入钱包",
+        "remove": "移除钱包",
+        "remove_desc": "移除当前钱包",
+        "remove_submit": "移除",
+        "remove_cancel": "取消",
+        "remove_confirm": "确认移除？",
+        "remove_success": "钱包已移除",
+        "import_desc": "导入已有钱包",
+        "import_submit": "导入",
+        "new_wallet": "创建新钱包",
+        "address": "地址",
+        "private_key": "私钥",
+        "public_key": "公钥",
+        "balance": "余额",
+        "transactions": "交易",
+        "send": "发送",
+        "receive": "接收",
+        "transactions_history": "交易历史",
+        "no_transactions": "没有找到交易",
+        "no_balance": "没有找到余额"
+    }
+}

@@ -1,0 +1,43 @@
+{
+    "common": {
+        "height": "Block Height"
+    },
+    "Home": {
+        "start": "Get Started!",
+        "about": "About",
+        "description": "Innovative Web3 blockchain using blockchain technology has been officially launched on April 23, 2024.ObChain Web is a Web3 application based on blockchain technology, which provides convenient, secure, and free digital asset management services to users."
+    },
+    "Wallet": {
+        "title": "ObChain Wallet",
+        "create": "Create Wallet",
+        "import": "Import Wallet",
+        "import_desc": "Import existing wallet",
+        "import_submit": "Import",
+        "import_cancel": "Cancel",
+        "import_confirm": "Confirm import?",
+        "import_success": "Wallet imported",
+        "export": "Export Wallet",
+        "export_desc": "Export current wallet",
+        "export_submit": "Export",
+        "export_cancel": "Cancel",
+        "export_confirm": "Confirm export?",
+        "remove": "Remove Wallet",
+        "remove_desc": "Remove current wallet",
+        "remove_submit": "Remove",
+        "remove_cancel": "Cancel",
+        "remove_confirm": "Confirm remove?",
+        "remove_success": "Wallet removed",
+        "new_wallet": "New Wallet",
+        "import_wallet": "Import Wallet",
+        "address": "Address",
+        "private_key": "Private Key",
+        "public_key": "Public Key",
+        "balance": "Balance",
+        "transactions": "Transactions",
+        "send": "Send",
+        "receive": "Receive",
+        "transactions_history": "Transactions History",
+        "no_transactions": "No transactions found",
+        "no_balance": "No balance found"
+    }
+}
