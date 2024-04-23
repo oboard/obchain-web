@@ -1,12 +1,12 @@
-import sha256 from "crypto-js/sha256";
+import eccrypto from "eccrypto";
+
 export function generateWalletKeyPair() {
-  // Generate a random key
-  // RSA encryption requires a public and private key pair
-  const private_key = sha256(Math.random().toString()).toString();
-  const public_key = sha256(private_key).toString();
+  // 生成一个新的ECC密钥对
+  const privateKey = eccrypto.generatePrivate();
+  const publicKey = eccrypto.getPublic(privateKey);
   const key = {
-    private: private_key,
-    public: public_key,
+    public: publicKey.toString("hex"),
+    private: privateKey.toString("hex"),
   };
   return key;
 }

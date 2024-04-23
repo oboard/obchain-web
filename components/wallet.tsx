@@ -41,7 +41,6 @@ export default function Wallet() {
   const [privateKey, setPrivateKey] = useLocalStorage("private_key", "");
 
   const [balance, setBalance] = useState(0);
-  const [key, setKey] = useLocalStorage("public_key", "");
   const [_privateKey, setPrivateKeyValue] = useState("");
 
   const handleSubmit = (event: React.FormEvent) => {
