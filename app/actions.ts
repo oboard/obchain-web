@@ -3,19 +3,17 @@ import ObBlock from "@/lib/block";
 import { ObDataType } from "@/lib/obdata";
 import { kv } from "@vercel/kv";
 
-const firstBlock = {
-  index: 0,
-  hash: "0",
-  time: new Date().getTime(),
-};
-
 export async function getBalanceByAddress(address: string): Promise<number> {
   const balance = await kv.get(`balance:${address}`);
   return balance ? Number(balance) : 0;
 }
 
-export async function fetchLatestBlock(): Promise<ObBlock> {
-  return ((await kv.get("latestBlock")) || firstBlock) as ObBlock;
+export async function fetchLatestBlock(): Promise<ObBlock | undefined> {
+  const height = await getBlockHeight();
+  if (await kv.exists(`block:${height}`)) {
+    return (await kv.get(`block:${height}`)) as ObBlock;
+  }
+  return undefined;
 }
 
 export async function getBlockHeight(): Promise<number> {
@@ -23,15 +21,17 @@ export async function getBlockHeight(): Promise<number> {
 }
 
 export async function pushBlock(block: ObBlock): Promise<ObBlock> {
+
   kv.set(`block:${block.i}`, block);
-  kv.set(`latestBlock`, block);
+  kv.set(`height`, block.i);
   block.data = [
     {
       type: ObDataType.MiningReward,
       amount: 10,
       receiver: block.miner,
-      sender: "system"
+      sender: "system",
     },
   ];
+  await kv.incrby(`balance:${block.miner}`, 10);
   return block;
 }

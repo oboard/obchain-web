@@ -1,10 +1,10 @@
 "use client";
 import { useTranslations } from "next-intl";
 import WalletPublicKey from "./wallet-public-key";
-import useLocalStorage from "@/hooks/use-local-storage";
+
 import { getBalanceByAddress } from "@/app/actions";
 import { useEffect, useState } from "react";
-import { generateWalletKeyPair } from "@/lib/key";
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -30,54 +30,46 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { SHA256 } from "crypto-js";
 import { cn } from "@/lib/utils";
 import WalletPrivateKey from "./wallet-private-key";
+import { observer } from "mobx-react-lite";
+import walletStore from "@/stores/wallet";
 
-export default function Wallet() {
+function Wallet() {
   const t = useTranslations("Wallet");
 
-  const [publicKey, setPublicKey] = useLocalStorage("public_key", "");
-  const [privateKey, setPrivateKey] = useLocalStorage("private_key", "");
-
-  const [balance, setBalance] = useState(0);
+  // const [balance, setBalance] = useState(0);
   const [_privateKey, setPrivateKeyValue] = useState("");
 
   const handleSubmit = (event: React.FormEvent) => {
-    setPrivateKey(privateKey);
-    const publicKey = SHA256(privateKey).toString();
-    setPublicKey(publicKey);
+    walletStore.importWallet(_privateKey);
   };
 
   useEffect(() => {
-    getBalanceByAddress(publicKey).then((balance) => {
-      setBalance(balance);
-    });
-  }, [publicKey]);
+    walletStore.loadBalance();
+  }, []);
 
-  const genKey = async () => {
-    const keyPair = generateWalletKeyPair();
-    setPublicKey(keyPair.public);
-    setPrivateKey(keyPair.private);
+  const genKey = () => {
+    walletStore.newWallet();
   };
 
   return (
     <div className="bg-white/30 p-8 shadow-xl ring-1 ring-gray-900/5 rounded-lg backdrop-blur-lg max-w-xl mx-auto w-full">
       <div className="text-lg font-bold mb-4 flex flex-row justify-between">
         <span>{t("title")}</span>
-        {publicKey != "" ? (
+        {walletStore.publicKey != "" ? (
           <span className="text-xl text-blue-500 font-bold">
-            {Intl.NumberFormat("en-us").format(balance)} Ob
+            {Intl.NumberFormat("en-us").format(walletStore.balance)} Ob
           </span>
         ) : (
           <div></div>
         )}
       </div>
       <div>
-        {publicKey ? (
+        {walletStore.publicKey ? (
           <>
-            <WalletPublicKey publicKey={publicKey} />
-            <WalletPrivateKey privateKey={privateKey} />
+            <WalletPublicKey publicKey={walletStore.publicKey} />
+            <WalletPrivateKey privateKey={walletStore.privateKey} />
             <div className="flex flex-row gap-4 mt-4">
               <Button>{t("send")}</Button>
               <Button>{t("receive")}</Button>
@@ -102,8 +94,7 @@ export default function Wallet() {
                         })
                       )}
                       onClick={(e) => {
-                        setPublicKey("");
-                        setPrivateKey("");
+                        walletStore.removeWallet();
                       }}
                     >
                       {t("remove_submit")}
@@ -136,7 +127,7 @@ export default function Wallet() {
                       defaultValue=""
                       type="text"
                       placeholder={t("private_key")}
-                      value={privateKey}
+                      value={walletStore.privateKey}
                       onChange={(e) => setPrivateKeyValue(e.target.value)}
                       className="col-span-3"
                     />
@@ -157,3 +148,5 @@ export default function Wallet() {
     </div>
   );
 }
+
+export default observer(Wallet);

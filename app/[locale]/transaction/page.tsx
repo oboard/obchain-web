@@ -1,9 +1,14 @@
 "use client";
 import Miner from "@/components/miner";
 import Wallet from "@/components/wallet";
-import { createContext, useContext } from "react";
+import walletStore from "@/stores/wallet";
+import { observer } from "mobx-react-lite";
+import { useEffect } from "react";
 
-export default function TransactionPage() {
+function TransactionPage() {
+  useEffect(() => {
+    walletStore.loadWalletFromStorage();
+  }, []);
 
   return (
     <main className="relative flex min-h-screen flex-col items-center gap-2">
@@ -15,3 +20,5 @@ export default function TransactionPage() {
     </main>
   );
 }
+
+export default observer(TransactionPage);

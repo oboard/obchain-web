@@ -1,8 +1,14 @@
+"use client";
 import eccrypto from "eccrypto";
 
-export function generateWalletKeyPair() {
+export function generateWalletKeyPair(prePrivateKey?: string): {
+  public: string;
+  private: string;
+} {
   // 生成一个新的ECC密钥对
-  const privateKey = eccrypto.generatePrivate();
+  const privateKey = prePrivateKey
+    ? Buffer.from(prePrivateKey)
+    : eccrypto.generatePrivate();
   const publicKey = eccrypto.getPublic(privateKey);
   const key = {
     public: publicKey.toString("hex"),
