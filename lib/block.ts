@@ -18,13 +18,18 @@ export function calculateHash(block: ObBlock) {
   ).toString();
 }
 
-export function mineBlock(block: ObBlock, difficulty: number, appendLogFunc: (log: string, index?: number) => void): ObBlock {
+export function mineBlock(
+  block: ObBlock,
+  difficulty: number,
+  appendLogFunc: (log: string, index?: number) => number
+): ObBlock {
+  const index = appendLogFunc("nonce: 0");
   while (
     calculateHash(block).substring(0, difficulty) !==
     Array(difficulty + 1).join("0")
   ) {
     block.nonce++;
-    appendLogFunc(`nonce: ${block.nonce}`);
+    appendLogFunc(`nonce: ${block.nonce}`, index);
   }
   block.hash = calculateHash(block);
   return block;

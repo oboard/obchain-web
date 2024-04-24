@@ -21,9 +21,6 @@ export async function getBlockHeight(): Promise<number> {
 }
 
 export async function pushBlock(block: ObBlock): Promise<ObBlock> {
-
-  kv.set(`block:${block.i}`, block);
-  kv.set(`height`, block.i);
   block.data = [
     {
       type: ObDataType.MiningReward,
@@ -32,6 +29,8 @@ export async function pushBlock(block: ObBlock): Promise<ObBlock> {
       sender: "system",
     },
   ];
+  kv.set(`block:${block.i}`, block);
+  kv.incr(`height`);
   await kv.incrby(`balance:${block.miner}`, 10);
   return block;
 }

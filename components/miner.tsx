@@ -16,7 +16,7 @@ function Miner() {
     walletStore.loadHeight();
   }, []);
 
-  function appendLog(log: string, index?: number) {
+  function appendLog(log: string, index?: number): number {
     if (index === undefined) {
       setMiningLog((prev) => [...prev, log]);
     } else {
@@ -26,30 +26,21 @@ function Miner() {
         return newPrev;
       });
     }
+    return index === undefined ? miningLog.length : index;
   }
   return (
-    <div className="bg-white/30 p-8 shadow-xl ring-1 ring-gray-900/5 rounded-lg backdrop-blur-lg max-w-xl mx-auto w-full">
+    <div className="bg-white/30 p-8 shadow-xl ring-1 ring-gray-900/5 rounded-lg backdrop-blur-lg  max-w-xl mx-auto w-full">
       <h1 className="text-3xl font-bold mb-4">Miner</h1>
-      {walletStore.blockHeight === -1  ? (
+      {walletStore.blockHeight === -1 ? (
         <p className="animate-pulse">Loading...</p>
       ) : (
         <>
-          <p>Now Block Height: {walletStore.blockHeight }</p>
-          {miningLog.length > 0 && (
-            <div className="mb-4 bg-black rounded p-4 max-height-200 overflow-y-auto">
-              <div className="bg-gray-100 p-4 rounded-lg">
-                <p className="mb-2">Mining Log:</p>
-                <ul className="list-disc list-inside">
-                  {miningLog.reverse().map((log, index) => (
-                    <li key={index}>{log}</li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          )}
+          <p>Now Block Height: {walletStore.blockHeight}</p>
+
           <Button
             onClick={() => {
-              if(!walletStore.publicKey) {
+              const toastId = toast.loading("Mining...");
+              if (!walletStore.publicKey) {
                 toast.error("Please create a wallet first");
                 return;
               }
@@ -73,10 +64,24 @@ function Miner() {
               appendLog(`Mined block ${block.i} with hash ${block.hash}`);
               walletStore.loadBalance();
               walletStore.loadHeight();
+              toast.success("Mined block", { id: toastId });
             }}
           >
             Start Mining
           </Button>
+          {miningLog.length > 0 && (
+            <div
+              className="mt-4 overflow-y-auto overflow-x-hidden bg-gray-100 p-4 rounded-lg"
+              style={{ maxHeight: "300px" }}
+            >
+              <p className="mb-2">Mining Log:</p>
+              <ul className="list-disc list-inside">
+                {miningLog.map((log, index) => (
+                  <li key={index}>{log}</li>
+                ))}
+              </ul>
+            </div>
+          )}
         </>
       )}
     </div>
