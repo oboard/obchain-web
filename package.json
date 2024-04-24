@@ -15,6 +15,7 @@
     "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-label": "^2.0.2",
+    "@toruslabs/eccrypto": "^4.0.0",
     "@types/eccrypto": "^1.1.6",
     "eccrypto": "^1.1.6",
     "jsencrypt": "^3.3.2",

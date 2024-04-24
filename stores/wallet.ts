@@ -3,7 +3,7 @@ import {
   fetchLatestBlock,
   getBalanceByAddress,
   getBlockHeight,
-} from "@/app/actions";
+} from "@/lib/actions";
 import ObBlock from "@/lib/block";
 import { generateWalletKeyPair } from "@/lib/key";
 import { makeAutoObservable } from "mobx";

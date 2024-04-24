@@ -2,7 +2,7 @@
 import { useTranslations } from "next-intl";
 import WalletPublicKey from "./wallet-public-key";
 
-import { getBalanceByAddress } from "@/app/actions";
+import { getBalanceByAddress, sendToAddress } from "@/lib/actions";
 import { useEffect, useState } from "react";
 
 import {
@@ -34,15 +34,33 @@ import { cn } from "@/lib/utils";
 import WalletPrivateKey from "./wallet-private-key";
 import { observer } from "mobx-react-lite";
 import walletStore from "@/stores/wallet";
+import eccrypto from "eccrypto";
 
 function Wallet() {
   const t = useTranslations("Wallet");
 
   // const [balance, setBalance] = useState(0);
   const [_privateKey, setPrivateKeyValue] = useState("");
+  const [_receiverKey, setReceiverKey] = useState("");
+  const [_sendAmount, setSendAmount] = useState(0);
 
   const handleSubmit = (event: React.FormEvent) => {
     walletStore.importWallet(_privateKey);
+  };
+
+  const handleSendSubmit = async (event: React.FormEvent) => {
+    const from = walletStore.publicKey;
+    const to = _receiverKey;
+    const amount = _sendAmount;
+    sendToAddress(
+      from,
+      to,
+      amount,
+      await eccrypto.sign(
+        Buffer.from(walletStore.privateKey),
+        Buffer.from(`${from}${to}${amount}`)
+      )
+    );
   };
 
   useEffect(() => {
@@ -71,7 +89,40 @@ function Wallet() {
             <WalletPublicKey publicKey={walletStore.publicKey} />
             <WalletPrivateKey privateKey={walletStore.privateKey} />
             <div className="flex flex-row gap-4 mt-4">
-              <Button>{t("send")}</Button>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button>{t("send")}</Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle>{t("send")}</DialogTitle>
+                    <DialogDescription>{t("send_desc")}</DialogDescription>
+                  </DialogHeader>
+                  <div className="grid gap-4 py-4">
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="name" className="text-right">
+                        {t("public_key")}
+                      </Label>
+                      <Input
+                        id="name"
+                        defaultValue=""
+                        type="text"
+                        placeholder={t("public_key")}
+                        value={_receiverKey}
+                        onChange={(e) => setReceiverKey(e.target.value)}
+                        className="col-span-3"
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button type="submit" onClick={handleSendSubmit}>
+                        {t("send_submit")}
+                      </Button>
+                    </DialogClose>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
               <Button>{t("receive")}</Button>
               <Button>{t("transactions")}</Button>
               <AlertDialog>
@@ -93,7 +144,7 @@ function Wallet() {
                           variant: "destructive",
                         })
                       )}
-                      onClick={(e) => {
+                      onClick={(_: React.MouseEvent<HTMLButtonElement>) => {
                         walletStore.removeWallet();
                       }}
                     >
@@ -127,7 +178,7 @@ function Wallet() {
                       defaultValue=""
                       type="text"
                       placeholder={t("private_key")}
-                      value={walletStore.privateKey}
+                      value={_privateKey}
                       onChange={(e) => setPrivateKeyValue(e.target.value)}
                       className="col-span-3"
                     />

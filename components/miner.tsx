@@ -1,6 +1,6 @@
 "use client";
 
-import { fetchLatestBlock, getBlockHeight, pushBlock } from "@/app/actions";
+import { fetchLatestBlock, getBlockHeight, pushBlock } from "@/lib/actions";
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import ObBlock, { mineBlock } from "@/lib/block";
