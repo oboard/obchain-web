@@ -1,6 +1,5 @@
 import sha256 from "crypto-js/sha256";
 import ObData from "./obdata";
-import eccrypto from "eccrypto";
 
 export default interface ObBlock {
   i: number; // 区块索引

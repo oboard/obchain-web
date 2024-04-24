@@ -25,6 +25,7 @@
         "public_key": "公钥",
         "balance": "余额",
         "transactions": "交易",
+        "amount": "金额",
         "send": "发送",
          "send_desc": "发送OBCoin到另一个地址",
         "send_submit": "发送",

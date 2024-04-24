@@ -2,7 +2,7 @@
 import ObBlock from "@/lib/block";
 import { ObDataType } from "@/lib/obdata";
 import { kv } from "@vercel/kv";
-import eccrypto from "@toruslabs/eccrypto";
+import * as eccrypto from "@toruslabs/eccrypto";
 
 export async function getBalanceByAddress(address: string): Promise<number> {
   const balance = await kv.get(`balance:${address}`);
@@ -13,6 +13,16 @@ export async function fetchLatestBlock(): Promise<ObBlock | undefined> {
   const height = await getBlockHeight();
   if (await kv.exists(`block:${height}`)) {
     return (await kv.get(`block:${height}`)) as ObBlock;
+  } else {
+    // search for the latest block
+    let _height = height;
+    while (_height > 0) {
+      if (await kv.exists(`block:${_height}`)) {
+        await kv.set("height", _height);
+        return (await kv.get(`block:${_height}`)) as ObBlock;
+      }
+      _height--;
+    }
   }
   return undefined;
 }
@@ -48,11 +58,7 @@ export async function sendToAddress(
   }
   // validate ecc signature
   await eccrypto
-    .verify(
-      Buffer.from(from),
-      sig,
-      Buffer.from(`${from}${to}${amount}`)
-    )
+    .verify(Buffer.from(from), sig, Buffer.from(`${from}${to}${amount}`))
     .then(function () {
       console.log("Signature is OK");
     })
@@ -61,6 +67,19 @@ export async function sendToAddress(
       return false;
     });
 
+  // appending transaction to block
+  const block = await fetchLatestBlock();
+  if (!block) {
+    return false;
+  }
+  block.data.push({
+    type: ObDataType.Transfer,
+    amount,
+    receiver: to,
+    sender: from,
+  });
+
+  // update balance
   await kv.incrby(`balance:${from}`, -amount);
   await kv.incrby(`balance:${to}`, amount);
   return true;

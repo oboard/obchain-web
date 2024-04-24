@@ -34,6 +34,7 @@
         "public_key": "Public Key",
         "balance": "Balance",
         "transactions": "Transactions",
+        "amount": "Amount",
         "send": "Send",
         "send_desc": "Send OBCoin to another address",
         "send_submit": "Send",

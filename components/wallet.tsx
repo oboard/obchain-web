@@ -34,7 +34,7 @@ import { cn } from "@/lib/utils";
 import WalletPrivateKey from "./wallet-private-key";
 import { observer } from "mobx-react-lite";
 import walletStore from "@/stores/wallet";
-import eccrypto from "eccrypto";
+import * as eccrypto from "@toruslabs/eccrypto";
 
 function Wallet() {
   const t = useTranslations("Wallet");
@@ -110,6 +110,21 @@ function Wallet() {
                         placeholder={t("public_key")}
                         value={_receiverKey}
                         onChange={(e) => setReceiverKey(e.target.value)}
+                        className="col-span-3"
+                      />
+
+                      <Label htmlFor="amount" className="text-right">
+                        {t("amount")}
+                      </Label>
+                      <Input
+                        id="amount"
+                        defaultValue=""
+                        type="number"
+                        placeholder={t("amount")}
+                        value={_sendAmount}
+                        onChange={(e) =>
+                          setSendAmount(parseInt(e.target.value))
+                        }
                         className="col-span-3"
                       />
                     </div>

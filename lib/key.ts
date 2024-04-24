@@ -1,5 +1,5 @@
 "use client";
-import eccrypto from "@toruslabs/eccrypto";
+import * as eccrypto from "@toruslabs/eccrypto";
 
 export function generateWalletKeyPair(prePrivateKey?: string) {
   // 生成一个新的ECC密钥对
